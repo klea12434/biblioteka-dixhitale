@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oraret - Biblioteca Antiqua</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Cinzel+Decorative:wght@400;700&family=Italiana&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --parchment: #d4c5b0;
+            --parchment-dark: #b8a88a;
+            --sepia: #8b7355;
+            --coffee: #6b5344;
+            --burgundy-warm: #5d2e2e;
+            --gold-antique: #c9a961;
+            --gold-dark: #9a7b4f;
+            --ink: #3d2914;
+            --shadow: rgba(61, 41, 20, 0.4);
+        }
+
+        body {
+            font-family: 'Cormorant Garamond', serif;
+            background: var(--parchment);
+            color: var(--ink);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        .parchment-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(ellipse at 30% 20%, rgba(201, 169, 97, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 80%, rgba(93, 46, 46, 0.1) 0%, transparent 50%),
+                linear-gradient(180deg, #e8dcc4 0%, #d4c5b0 50%, #c9b896 100%);
+            z-index: -2;
+        }
+
+        .paper-texture {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.6' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.08'/%3E%3C/svg%3E");
+            opacity: 0.6;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        nav {
+            background: linear-gradient(180deg, rgba(139, 115, 85, 0.95) 0%, rgba(107, 83, 68, 0.98) 100%);
+            padding: 1.2rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 3px double var(--gold-antique);
+            box-shadow: 0 4px 20px var(--shadow);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-icon {
+            width: 55px;
+            height: 55px;
+            background: var(--parchment);
+            border: 3px solid var(--gold-antique);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            box-shadow: 0 0 0 2px var(--coffee), 0 4px 15px var(--shadow);
+        }
+
+        .logo h1 {
+            font-family: 'Cinzel Decorative', serif;
+            font-size: 1.4rem;
+            color: var(--parchment);
+            letter-spacing: 2px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 0.3rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--parchment-dark);
+            text-decoration: none;
+            font-family: 'Cinzel Decorative', serif;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+            padding: 0.6rem 1rem;
+            border: 1px solid transparent;
+            letter-spacing: 1px;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--gold-antique);
+            border: 1px solid var(--gold-antique);
+            background: rgba(201, 169, 97, 0.1);
+        }
+
+        .page-header {
+            background: linear-gradient(180deg, rgba(139, 115, 85, 0.3) 0%, transparent 100%);
+            padding: 5rem 2rem;
+            text-align: center;
+            border-bottom: 1px solid var(--sepia);
+        }
+
+        .page-header h2 {
+            font-family: 'Italiana', serif;
+            font-size: 3.2rem;
+            color: var(--burgundy-warm);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 3rem;
+            position: relative;
+        }
+
+        .section {
+            position: relative;
+            margin: 4rem 0;
+            padding: 3rem;
+            background: rgba(232, 220, 196, 0.5);
+            border: 1px solid var(--sepia);
+            box-shadow: 0 10px 40px var(--shadow);
+        }
+
+        .section::before {
+            content: '';
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            right: 8px;
+            bottom: 8px;
+            border: 1px solid var(--gold-antique);
+            opacity: 0.3;
+            pointer-events: none;
+        }
+
+        .section-title {
+            font-family: 'Italiana', serif;
+            font-size: 1.8rem;
+            color: var(--burgundy-warm);
+            text-align: center;
+            margin-bottom: 3rem;
+            letter-spacing: 3px;
+        }
+
+        .schedule-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-bottom: 2rem;
+        }
+
+        .schedule-table th {
+            background: var(--burgundy-warm);
+            color: var(--gold-antique);
+            font-family: 'Cinzel Decorative', serif;
+            padding: 1.3rem;
+            text-align: left;
+            letter-spacing: 2px;
+            font-size: 0.9rem;
+            border-bottom: 3px solid var(--gold-antique);
+        }
+
+        .schedule-table td {
+            padding: 1.3rem;
+            border-bottom: 1px solid var(--sepia);
+            color: var(--coffee);
+            font-size: 1.1rem;
+        }
+
+        .schedule-table tr:hover td {
+            background: rgba(201, 169, 97, 0.1);
+        }
+
+        .schedule-table tr:nth-child(even) {
+            background: rgba(184, 168, 138, 0.2);
+        }
+
+        .day-cell {
+            font-family: 'Cinzel Decorative', serif;
+            color: var(--burgundy-warm);
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .closed-cell {
+            color: var(--burgundy-warm);
+            font-family: 'Cinzel Decorative', serif;
+            text-align: center;
+            letter-spacing: 4px;
+            font-weight: bold;
+        }
+
+        .info-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-top: 3rem;
+        }
+
+        .info-card {
+            background: rgba(255, 255, 255, 0.5);
+            border: 2px solid var(--sepia);
+            padding: 2rem 1rem;
+            text-align: center;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .info-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--burgundy-warm);
+        }
+
+        .info-card:hover {
+            border-color: var(--burgundy-warm);
+            transform: translateY(-5px);
+        }
+
+        .info-card h4 {
+            color: var(--burgundy-warm);
+            font-family: 'Cinzel Decorative', serif;
+            margin-bottom: 0.8rem;
+            letter-spacing: 2px;
+            font-size: 0.85rem;
+        }
+
+        .info-card p {
+            color: var(--coffee);
+            font-size: 1.05rem;
+        }
+
+        footer {
+            background: linear-gradient(180deg, var(--coffee) 0%, var(--ink) 100%);
+            border-top: 3px double var(--gold-antique);
+            padding: 5rem 2rem;
+            margin-top: 8rem;
+            text-align: center;
+        }
+
+        .footer-logo {
+            font-family: 'Italiana', serif;
+            font-size: 2rem;
+            color: var(--gold-antique);
+            margin-bottom: 1rem;
+            letter-spacing: 4px;
+        }
+
+        footer p {
+            color: var(--parchment-dark);
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .info-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--parchment);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--sepia);
+            border: 2px solid var(--parchment);
+        }
+    </style>
+</head>
+<body>
+    <div class="parchment-bg"></div>
+    <div class="paper-texture"></div>
+
+    <nav>
+        <div class="nav-container">
+            <div class="logo">
+                <div class="logo-icon">📜</div>
+                <div>
+                    <h1>Gjimnazi i Qytetit</h1>
+                    <small style="color: var(--parchment-dark); font-size: 0.7rem; letter-spacing: 3px;">BIBLIOTECA ANTIQUA</small>
+                </div>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index2.html">Kryefaqja</a></li>
+                <li><a href="katalogu2.html">Katalogu</a></li>
+                <li><a href="huazo2.html">Huazo</a></li>
+                <li><a href="rregullat2.html">Rregullat</a></li>
+                <li><a href="oraret2.html" class="active">Oraret</a></li>
+                <li><a href="rreth-nesh2.html">Rreth Nesh</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <h2>✦ Orari i Hapjes ✦</h2>
+    </div>
+
+    <div class="container">
+        <div class="section">
+            <h3 class="section-title">Orari i Shërbimit</h3>
+            
+            <table class="schedule-table">
+                <thead>
+                    <tr>
+                        <th>Dita</th>
+                        <th>Orari</th>
+                        <th>Shërbimi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="day-cell">E Hënë</td>
+                        <td>08:00 — 15:00</td>
+                        <td>Huazim, Kthim, Lexim</td>
+                    </tr>
+                    <tr>
+                        <td class="day-cell">E Martë</td>
+                        <td>08:00 — 15:00</td>
+                        <td>Huazim, Kthim, Lexim</td>
+                    </tr>
+                    <tr>
+                        <td class="day-cell">E Mërkurë</td>
+                        <td>08:00 — 15:00</td>
+                        <td>Huazim, Kthim, Lexim</td>
+                    </tr>
+                    <tr>
+                        <td class="day-cell">E Enjte</td>
+                        <td>08:00 — 15:00</td>
+                        <td>Huazim, Kthim, Lexim</td>
+                    </tr>
+                    <tr>
+                        <td class="day-cell">E Premte</td>
+                        <td>08:00 — 14:00</td>
+                        <td>Huazim, Kthim (Ditë e Shkurtuar)</td>
+                    </tr>
+                    <tr>
+                        <td class="day-cell">E Shtunë</td>
+                        <td>09:00 — 13:00</td>
+                        <td>Vetëm Lexim në Ambient</td>
+                    </tr>
+                    <tr>
+                        <td class="day-cell">E Diel</td>
+                        <td colspan="2" class="closed-cell">MBYLLUR</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="info-cards">
+                <div class="info-card">
+                    <h4>⚜ PERIUDHA</h4>
+                    <p>14 ditë kalendare</p>
+                </div>
+                <div class="info-card">
+                    <h4>⚜ RINOVIMI</h4>
+                    <p>7 ditë shtesë</p>
+                </div>
+                <div class="info-card">
+                    <h4>⚜ KONTAKT</h4>
+                    <p>042 123 456</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">✦ Biblioteca Antiqua ✦</div>
+            <p>Gjimnazi i Qytetit — Qendër Kulturore dhe Edukative</p>
+        </div>
+    </footer>
+</body>
+</html>

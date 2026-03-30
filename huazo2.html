@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rezervo - Biblioteca Antiqua</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Cinzel+Decorative:wght@400;700&family=Italiana&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --parchment: #d4c5b0;
+            --parchment-dark: #b8a88a;
+            --sepia: #8b7355;
+            --coffee: #6b5344;
+            --burgundy-warm: #5d2e2e;
+            --gold-antique: #c9a961;
+            --gold-dark: #9a7b4f;
+            --ink: #3d2914;
+            --shadow: rgba(61, 41, 20, 0.4);
+        }
+
+        body {
+            font-family: 'Cormorant Garamond', serif;
+            background: var(--parchment);
+            color: var(--ink);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        .parchment-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(ellipse at 30% 20%, rgba(201, 169, 97, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 80%, rgba(93, 46, 46, 0.1) 0%, transparent 50%),
+                linear-gradient(180deg, #e8dcc4 0%, #d4c5b0 50%, #c9b896 100%);
+            z-index: -2;
+        }
+
+        .paper-texture {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.6' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.08'/%3E%3C/svg%3E");
+            opacity: 0.6;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        nav {
+            background: linear-gradient(180deg, rgba(139, 115, 85, 0.95) 0%, rgba(107, 83, 68, 0.98) 100%);
+            padding: 1.2rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 3px double var(--gold-antique);
+            box-shadow: 0 4px 20px var(--shadow);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-icon {
+            width: 55px;
+            height: 55px;
+            background: var(--parchment);
+            border: 3px solid var(--gold-antique);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            box-shadow: 0 0 0 2px var(--coffee), 0 4px 15px var(--shadow);
+        }
+
+        .logo h1 {
+            font-family: 'Cinzel Decorative', serif;
+            font-size: 1.4rem;
+            color: var(--parchment);
+            letter-spacing: 2px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 0.3rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--parchment-dark);
+            text-decoration: none;
+            font-family: 'Cinzel Decorative', serif;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+            padding: 0.6rem 1rem;
+            border: 1px solid transparent;
+            letter-spacing: 1px;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--gold-antique);
+            border: 1px solid var(--gold-antique);
+            background: rgba(201, 169, 97, 0.1);
+        }
+
+        .page-header {
+            background: linear-gradient(180deg, rgba(139, 115, 85, 0.3) 0%, transparent 100%);
+            padding: 5rem 2rem;
+            text-align: center;
+            border-bottom: 1px solid var(--sepia);
+        }
+
+        .page-header h2 {
+            font-family: 'Italiana', serif;
+            font-size: 3.2rem;
+            color: var(--burgundy-warm);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 3rem;
+            position: relative;
+        }
+
+        .form-container {
+            position: relative;
+            margin: 4rem 0;
+            padding: 4rem;
+            background: rgba(232, 220, 196, 0.7);
+            border: 2px solid var(--sepia);
+            box-shadow: 
+                0 0 0 1px var(--gold-antique),
+                0 0 0 10px rgba(201, 169, 97, 0.1),
+                0 20px 60px var(--shadow);
+        }
+
+        .form-container::before {
+            content: '';
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            right: 12px;
+            bottom: 12px;
+            border: 1px solid var(--gold-antique);
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        .wax-seal {
+            width: 80px;
+            height: 80px;
+            background: var(--burgundy-warm);
+            border-radius: 50%;
+            margin: -80px auto 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: var(--gold-antique);
+            box-shadow: 
+                0 4px 15px var(--shadow),
+                inset 0 0 20px rgba(0,0,0,0.3);
+            border: 3px solid var(--gold-antique);
+            position: relative;
+        }
+
+        .wax-seal::before {
+            content: '';
+            position: absolute;
+            inset: -5px;
+            border: 1px solid var(--gold-antique);
+            border-radius: 50%;
+            opacity: 0.5;
+        }
+
+        .form-title {
+            font-family: 'Italiana', serif;
+            font-size: 1.8rem;
+            color: var(--burgundy-warm);
+            text-align: center;
+            margin-bottom: 2.5rem;
+            letter-spacing: 2px;
+        }
+
+        .info-note {
+            background: rgba(139, 115, 85, 0.15);
+            border-left: 3px solid var(--gold-antique);
+            padding: 1.5rem;
+            margin-bottom: 2.5rem;
+            font-style: italic;
+            color: var(--coffee);
+        }
+
+        .form-grid {
+            display: grid;
+            gap: 1.8rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-family: 'Cinzel Decorative', serif;
+            font-size: 0.8rem;
+            color: var(--burgundy-warm);
+            margin-bottom: 0.6rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .form-group input,
+        .form-group select {
+            padding: 1.1rem;
+            background: rgba(255, 255, 255, 0.6);
+            border: 1px solid var(--sepia);
+            color: var(--ink);
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.15rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--burgundy-warm);
+            box-shadow: 0 0 15px rgba(93, 46, 46, 0.15);
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .btn {
+            font-family: 'Cinzel Decorative', serif;
+            width: 100%;
+            padding: 1.3rem;
+            border: 2px solid var(--burgundy-warm);
+            background: transparent;
+            color: var(--burgundy-warm);
+            cursor: pointer;
+            transition: all 0.4s ease;
+            letter-spacing: 3px;
+            font-size: 0.95rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn:hover {
+            background: var(--burgundy-warm);
+            color: var(--parchment);
+        }
+
+        footer {
+            background: linear-gradient(180deg, var(--coffee) 0%, var(--ink) 100%);
+            border-top: 3px double var(--gold-antique);
+            padding: 5rem 2rem;
+            margin-top: 8rem;
+            text-align: center;
+        }
+
+        .footer-logo {
+            font-family: 'Italiana', serif;
+            font-size: 2rem;
+            color: var(--gold-antique);
+            margin-bottom: 1rem;
+            letter-spacing: 4px;
+        }
+
+        footer p {
+            color: var(--parchment-dark);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(61, 41, 20, 0.85);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--parchment);
+            padding: 3.5rem;
+            border: 3px double var(--burgundy-warm);
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+        }
+
+        .modal-seal {
+            width: 60px;
+            height: 60px;
+            background: var(--burgundy-warm);
+            border-radius: 50%;
+            margin: -90px auto 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: var(--gold-antique);
+            border: 2px solid var(--gold-antique);
+        }
+
+        .modal h3 {
+            font-family: 'Italiana', serif;
+            color: var(--burgundy-warm);
+            margin-bottom: 1.5rem;
+            letter-spacing: 2px;
+        }
+
+        .modal p {
+            color: var(--coffee);
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            color: var(--burgundy-warm);
+            cursor: pointer;
+            font-size: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .form-container {
+                padding: 2rem;
+            }
+            
+            .wax-seal {
+                margin-top: -60px;
+            }
+        }
+
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--parchment);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--sepia);
+            border: 2px solid var(--parchment);
+        }
+    </style>
+</head>
+<body>
+    <div class="parchment-bg"></div>
+    <div class="paper-texture"></div>
+
+    <nav>
+        <div class="nav-container">
+            <div class="logo">
+                <div class="logo-icon">📜</div>
+                <div>
+                    <h1>Gjimnazi i Qytetit</h1>
+                    <small style="color: var(--parchment-dark); font-size: 0.7rem; letter-spacing: 3px;">BIBLIOTECA ANTIQUA</small>
+                </div>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index2.html">Kryefaqja</a></li>
+                <li><a href="katalogu2.html">Katalogu</a></li>
+                <li><a href="huazo2.html" class="active">Huazo</a></li>
+                <li><a href="rregullat2.html">Rregullat</a></li>
+                <li><a href="oraret2.html">Oraret</a></li>
+                <li><a href="rreth-nesh2.html">Rreth Nesh</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <h2>✦ Rezervo Vëllimin ✦</h2>
+    </div>
+
+    <div class="container">
+        <div class="form-container">
+            <div class="wax-seal">✦</div>
+            <h3 class="form-title">Fletë Rezervimi</h3>
+            
+            <div class="info-note">
+                Plotësoni të dhënat më poshtë për të rezervuar një vëllim. Rezervimi juaj do të përpunohet brenda 24 orëve. Koha e huazimit është 14 ditë me mundësi rinovimi.
+            </div>
+
+            <form id="reserveForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="readerName">Emri i Plotë</label>
+                        <input type="text" id="readerName" required placeholder="Shkruani emrin tuaj...">
+                    </div>
+                    <div class="form-group">
+                        <label for="readerClass">Kursi / Klasa</label>
+                        <select id="readerClass" required>
+                            <option value="">Zgjidhni kursin...</option>
+                            <option value="I/1">Kursi I - Grupi 1</option>
+                            <option value="I/2">Kursi I - Grupi 2</option>
+                            <option value="II/1">Kursi II - Grupi 1</option>
+                            <option value="II/2">Kursi II - Grupi 2</option>
+                            <option value="III/1">Kursi III - Grupi 1</option>
+                            <option value="III/2">Kursi III - Grupi 2</option>
+                            <option value="IV/1">Kursi IV - Grupi 1</option>
+                            <option value="IV/2">Kursi IV - Grupi 2</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="volumeSelect">Zgjidhni Vëllimin</label>
+                        <select id="volumeSelect" required>
+                            <option value="">Zgjidhni një vëllim...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="reserveDate">Data e Rezervimit</label>
+                        <input type="date" id="reserveDate" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn">Vulos Rezervimin</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal" id="successModal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal()">✕</span>
+            <div class="modal-seal">✓</div>
+            <h3>Rezervimi u Pranua</h3>
+            <p id="modalMessage"></p>
+            <button class="btn" onclick="closeModal()" style="margin-top: 1.5rem; max-width: 200px;">Mbyll</button>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">✦ Biblioteca Antiqua ✦</div>
+            <p>Gjimnazi i Qytetit — Qendër Kulturore dhe Edukative</p>
+        </div>
+    </footer>
+
+    <script>
+        const volumes = [
+            { id: 1, title: "Krim dhe Ndëshkim", author: "Fjodor Dostojevski", available: true },
+            { id: 2, title: "Pride and Prejudice", author: "Jane Austen", available: true },
+            { id: 3, title: "Iliada", author: "Homer", available: false },
+            { id: 4, title: "Odisea", author: "Homer", available: true },
+            { id: 5, title: "Prometheu i Vënë në Zinxhirë", author: "Eshil", available: true },
+            { id: 6, title: "Medea", author: "Euripid", available: true },
+            { id: 7, title: "Dekameron", author: "Giovanni Boccaccio", available: true },
+            { id: 8, title: "Divina Commedia", author: "Dante Alighieri", available: false },
+            { id: 9, title: "Don Kishoti", author: "Miguel de Cervantes", available: true },
+            { id: 10, title: "Hamleti", author: "William Shakespeare", available: true },
+            { id: 11, title: "Makbethi", author: "William Shakespeare", available: true },
+            { id: 12, title: "Romeo dhe Zhulieta", author: "William Shakespeare", available: true },
+            { id: 13, title: "Zadig", author: "Voltaire", available: true },
+            { id: 14, title: "Kandidi", author: "Voltaire", available: true },
+            { id: 15, title: "Katedralja e Parisit", author: "Victor Hugo", available: true },
+            { id: 16, title: "Të Mjerët", author: "Victor Hugo", available: false },
+            { id: 17, title: "Robinson Kruzo", author: "Daniel Defoe", available: true },
+            { id: 18, title: "Gulliveri", author: "Jonathan Swift", available: true },
+            { id: 19, title: "De Rerum Natura", author: "Titus Lucretius Carus", available: true },
+            { id: 20, title: "Eneida", author: "Virgili", available: true },
+            { id: 21, title: "Metamorfozat", author: "Ovidi", available: true },
+            { id: 22, title: "Fedon", author: "Platon", available: true },
+            { id: 23, title: "Edipi Mbret", author: "Sofokles", available: false },
+            { id: 24, title: "Antigona", author: "Sofokles", available: true },
+            { id: 25, title: "Mbi Qiellin dhe Ferrin", author: "Dante Alighieri", available: true }
+        ];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            populateVolumeSelect();
+            setDefaultDate();
+        });
+
+        function setDefaultDate() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('reserveDate').value = today;
+        }
+
+        function populateVolumeSelect() {
+            const select = document.getElementById('volumeSelect');
+            const availableVolumes = volumes.filter(v => v.available);
+            
+            availableVolumes.forEach(volume => {
+                const option = document.createElement('option');
+                option.value = volume.id;
+                option.textContent = `${volume.title} — ${volume.author}`;
+                select.appendChild(option);
+            });
+        }
+
+        document.getElementById('reserveForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('readerName').value;
+            const course = document.getElementById('readerClass').value;
+            const volumeId = parseInt(document.getElementById('volumeSelect').value);
+            const date = document.getElementById('reserveDate').value;
+            
+            const volume = volumes.find(v => v.id === volumeId);
+            
+            if (volume && volume.available) {
+                volume.available = false;
+                
+                document.getElementById('modalMessage').innerHTML = 
+                    `Lexues: <strong style="color: var(--burgundy-warm);">${name}</strong><br>` +
+                    `Kursi: ${course}<br><br>` +
+                    `Vëllimi: <em>"${volume.title}"</em><br>` +
+                    `Autori: ${volume.author}<br>` +
+                    `Data: ${date}<br><br>` +
+                    `<small>Rezervimi juaj u pranua. Ju do të njoftoheni kur vëllimi të jetë gati për marrje.</small>`;
+                document.getElementById('successModal').classList.add('active');
+                
+                this.reset();
+                setDefaultDate();
+                
+                const select = document.getElementById('volumeSelect');
+                select.innerHTML = '<option value="">Zgjidhni një vëllim...</option>';
+                populateVolumeSelect();
+            }
+        });
+
+        function closeModal() {
+            document.getElementById('successModal').classList.remove('active');
+        }
+
+        document.getElementById('successModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>

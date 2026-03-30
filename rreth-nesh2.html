@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rreth Nesh - Biblioteca Antiqua</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Cinzel+Decorative:wght@400;700&family=Italiana&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --parchment: #d4c5b0;
+            --parchment-dark: #b8a88a;
+            --sepia: #8b7355;
+            --coffee: #6b5344;
+            --burgundy-warm: #5d2e2e;
+            --gold-antique: #c9a961;
+            --gold-dark: #9a7b4f;
+            --ink: #3d2914;
+            --shadow: rgba(61, 41, 20, 0.4);
+        }
+
+        body {
+            font-family: 'Cormorant Garamond', serif;
+            background: var(--parchment);
+            color: var(--ink);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        .parchment-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(ellipse at 30% 20%, rgba(201, 169, 97, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 80%, rgba(93, 46, 46, 0.1) 0%, transparent 50%),
+                linear-gradient(180deg, #e8dcc4 0%, #d4c5b0 50%, #c9b896 100%);
+            z-index: -2;
+        }
+
+        .paper-texture {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.6' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.08'/%3E%3C/svg%3E");
+            opacity: 0.6;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        nav {
+            background: linear-gradient(180deg, rgba(139, 115, 85, 0.95) 0%, rgba(107, 83, 68, 0.98) 100%);
+            padding: 1.2rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 3px double var(--gold-antique);
+            box-shadow: 0 4px 20px var(--shadow);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-icon {
+            width: 55px;
+            height: 55px;
+            background: var(--parchment);
+            border: 3px solid var(--gold-antique);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            box-shadow: 0 0 0 2px var(--coffee), 0 4px 15px var(--shadow);
+        }
+
+        .logo h1 {
+            font-family: 'Cinzel Decorative', serif;
+            font-size: 1.4rem;
+            color: var(--parchment);
+            letter-spacing: 2px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 0.3rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--parchment-dark);
+            text-decoration: none;
+            font-family: 'Cinzel Decorative', serif;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+            padding: 0.6rem 1rem;
+            border: 1px solid transparent;
+            letter-spacing: 1px;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--gold-antique);
+            border: 1px solid var(--gold-antique);
+            background: rgba(201, 169, 97, 0.1);
+        }
+
+        .page-header {
+            background: linear-gradient(180deg, rgba(139, 115, 85, 0.3) 0%, transparent 100%);
+            padding: 5rem 2rem;
+            text-align: center;
+            border-bottom: 1px solid var(--sepia);
+        }
+
+        .page-header h2 {
+            font-family: 'Italiana', serif;
+            font-size: 3.2rem;
+            color: var(--burgundy-warm);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 3rem;
+            position: relative;
+        }
+
+        .section {
+            position: relative;
+            margin: 4rem 0;
+            padding: 4rem;
+            background: rgba(232, 220, 196, 0.5);
+            border: 1px solid var(--sepia);
+            box-shadow: 0 10px 40px var(--shadow);
+        }
+
+        .section::before {
+            content: '';
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            right: 8px;
+            bottom: 8px;
+            border: 1px solid var(--gold-antique);
+            opacity: 0.3;
+            pointer-events: none;
+        }
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 4rem;
+            align-items: center;
+            margin-bottom: 4rem;
+        }
+
+        .portrait-frame {
+            background: linear-gradient(135deg, rgba(139, 115, 85, 0.4) 0%, rgba(107, 83, 68, 0.5) 100%);
+            height: 350px;
+            border: 3px double var(--sepia);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 6rem;
+            position: relative;
+            box-shadow: 
+                0 0 0 1px var(--gold-antique),
+                0 10px 40px var(--shadow);
+        }
+
+        .portrait-frame::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            right: 15px;
+            bottom: 15px;
+            border: 1px solid var(--gold-antique);
+            opacity: 0.4;
+        }
+
+        .about-text h3 {
+            font-family: 'Italiana', serif;
+            color: var(--burgundy-warm);
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            letter-spacing: 2px;
+        }
+
+        .about-text p {
+            color: var(--coffee);
+            font-size: 1.15rem;
+            line-height: 1.9;
+            margin-bottom: 1.2rem;
+            text-align: justify;
+        }
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin: 4rem 0;
+        }
+
+        .stat-box {
+            background: rgba(255, 255, 255, 0.5);
+            border: 2px solid var(--sepia);
+            padding: 2rem 1rem;
+            text-align: center;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .stat-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--burgundy-warm);
+        }
+
+        .stat-box:hover {
+            border-color: var(--burgundy-warm);
+            transform: translateY(-5px);
+        }
+
+        .stat-value {
+            font-family: 'Italiana', serif;
+            font-size: 2.8rem;
+            color: var(--burgundy-warm);
+            margin-bottom: 0.5rem;
+            letter-spacing: 2px;
+        }
+
+        .stat-desc {
+            font-family: 'Cinzel Decorative', serif;
+            font-size: 0.75rem;
+            color: var(--coffee);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .contact-panel {
+            background: rgba(139, 115, 85, 0.15);
+            border: 2px solid var(--sepia);
+            padding: 2.5rem;
+            margin-top: 3rem;
+        }
+
+        .contact-panel h4 {
+            font-family: 'Cinzel Decorative', serif;
+            color: var(--burgundy-warm);
+            text-align: center;
+            margin-bottom: 2rem;
+            letter-spacing: 3px;
+            font-size: 1.1rem;
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            text-align: center;
+        }
+
+        .contact-entry strong {
+            display: block;
+            color: var(--burgundy-warm);
+            margin-bottom: 0.5rem;
+            font-family: 'Cinzel Decorative', serif;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+        }
+
+        .contact-entry span {
+            color: var(--coffee);
+            font-size: 1.05rem;
+        }
+
+        footer {
+            background: linear-gradient(180deg, var(--coffee) 0%, var(--ink) 100%);
+            border-top: 3px double var(--gold-antique);
+            padding: 5rem 2rem;
+            margin-top: 8rem;
+            text-align: center;
+        }
+
+        .footer-logo {
+            font-family: 'Italiana', serif;
+            font-size: 2rem;
+            color: var(--gold-antique);
+            margin-bottom: 1rem;
+            letter-spacing: 4px;
+        }
+
+        footer p {
+            color: var(--parchment-dark);
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .about-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-row {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .contact-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--parchment);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--sepia);
+            border: 2px solid var(--parchment);
+        }
+    </style>
+</head>
+<body>
+    <div class="parchment-bg"></div>
+    <div class="paper-texture"></div>
+
+    <nav>
+        <div class="nav-container">
+            <div class="logo">
+                <div class="logo-icon">📜</div>
+                <div>
+                    <h1>Gjimnazi i Qytetit</h1>
+                    <small style="color: var(--parchment-dark); font-size: 0.7rem; letter-spacing: 3px;">BIBLIOTECA ANTIQUA</small>
+                </div>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index2.html">Kryefaqja</a></li>
+                <li><a href="katalogu2.html">Katalogu</a></li>
+                <li><a href="huazo2.html">Huazo</a></li>
+                <li><a href="rregullat2.html">Rregullat</a></li>
+                <li><a href="oraret2.html">Oraret</a></li>
+                <li><a href="rreth-nesh2.html" class="active">Rreth Nesh</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <h2>✦ Rreth Nesh ✦</h2>
+    </div>
+
+    <div class="container">
+        <div class="section">
+            <div class="about-grid">
+                <div class="portrait-frame">
+                    📜
+                </div>
+                <div class="about-text">
+                    <h3>Biblioteca Antiqua</h3>
+                    <p>
+                        Themeluar në vitin 1992, Biblioteca Antiqua është një oaz i dijes në zemër të Gjimnazit të Qytetit. Misioni ynë është të ruajmë dhe transmetojmë trashëgiminë intelektuale të njerëzimit tek brezat e rinj.
+                    </p>
+                    <p>
+                        Koleksioni ynë përfshin vëllime të rralla nga letërsia klasike, filozofia, dhe historia e artit. Çdo libër në raftat tanë është një dritare drejt një epoke të shkuar, një mundësi për të dialoguar me mendimtarët më të mëdhenj të historisë.
+                    </p>
+                    <p>
+                        Sistemi ynë digjital, i inauguruar në 2024, e bën të mundur qasjen në këtë thesar për të gjithë nxënësit, duke i dhënë bibliotekës sonë dimensionin e shekullit XXI pa humbur shpirtin klasik.
+                    </p>
+                </div>
+            </div>
+
+            <div class="stats-row">
+                <div class="stat-box">
+                    <div class="stat-value">1992</div>
+                    <div class="stat-desc">Viti i Themelimit</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value">200+</div>
+                    <div class="stat-desc">Lexues Aktivë</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value">25</div>
+                    <div class="stat-desc">Vëllime në Katalog</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value">32</div>
+                    <div class="stat-desc">Vite Traditë</div>
+                </div>
+            </div>
+
+            <div class="contact-panel">
+                <h4>⚜ INFORMACIONE KONTAKTI ⚜</h4>
+                <div class="contact-grid">
+                    <div class="contact-entry">
+                        <strong>ADRESA</strong>
+                        <span>Rruga e Dritës, Nr. 15<br>Qyteti, Shqipëri</span>
+                    </div>
+                    <div class="contact-entry">
+                        <strong>TELEFON</strong>
+                        <span>042 123 456</span>
+                    </div>
+                    <div class="contact-entry">
+                        <strong>EMAIL</strong>
+                        <span>biblioteka@gjimnazi.edu.al</span>
+                    </div>
+                    <div class="contact-entry">
+                        <strong>ORARI</strong>
+                        <span>E Hënë — E Premte<br>08:00 — 15:00</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">✦ Biblioteca Antiqua ✦</div>
+            <p>Gjimnazi i Qytetit — Qendër Kulturore dhe Edukative</p>
+            <p style="margin-top: 1rem; color: var(--sepia); font-size: 0.95rem;">
+                Rruga e Dritës, Nr. 15 | Tel: 042 123 456 | biblioteka@gjimnazi.edu.al
+            </p>
+        </div>
+    </footer>
+</body>
+</html>

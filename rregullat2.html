@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rregullat - Biblioteca Antiqua</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Cinzel+Decorative:wght@400;700&family=Italiana&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --parchment: #d4c5b0;
+            --parchment-dark: #b8a88a;
+            --sepia: #8b7355;
+            --coffee: #6b5344;
+            --burgundy-warm: #5d2e2e;
+            --gold-antique: #c9a961;
+            --gold-dark: #9a7b4f;
+            --ink: #3d2914;
+            --shadow: rgba(61, 41, 20, 0.4);
+        }
+
+        body {
+            font-family: 'Cormorant Garamond', serif;
+            background: var(--parchment);
+            color: var(--ink);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        .parchment-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(ellipse at 30% 20%, rgba(201, 169, 97, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 80%, rgba(93, 46, 46, 0.1) 0%, transparent 50%),
+                linear-gradient(180deg, #e8dcc4 0%, #d4c5b0 50%, #c9b896 100%);
+            z-index: -2;
+        }
+
+        .paper-texture {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.6' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.08'/%3E%3C/svg%3E");
+            opacity: 0.6;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        nav {
+            background: linear-gradient(180deg, rgba(139, 115, 85, 0.95) 0%, rgba(107, 83, 68, 0.98) 100%);
+            padding: 1.2rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 3px double var(--gold-antique);
+            box-shadow: 0 4px 20px var(--shadow);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-icon {
+            width: 55px;
+            height: 55px;
+            background: var(--parchment);
+            border: 3px solid var(--gold-antique);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            box-shadow: 0 0 0 2px var(--coffee), 0 4px 15px var(--shadow);
+        }
+
+        .logo h1 {
+            font-family: 'Cinzel Decorative', serif;
+            font-size: 1.4rem;
+            color: var(--parchment);
+            letter-spacing: 2px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 0.3rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--parchment-dark);
+            text-decoration: none;
+            font-family: 'Cinzel Decorative', serif;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+            padding: 0.6rem 1rem;
+            border: 1px solid transparent;
+            letter-spacing: 1px;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--gold-antique);
+            border: 1px solid var(--gold-antique);
+            background: rgba(201, 169, 97, 0.1);
+        }
+
+        .page-header {
+            background: linear-gradient(180deg, rgba(139, 115, 85, 0.3) 0%, transparent 100%);
+            padding: 5rem 2rem;
+            text-align: center;
+            border-bottom: 1px solid var(--sepia);
+        }
+
+        .page-header h2 {
+            font-family: 'Italiana', serif;
+            font-size: 3.2rem;
+            color: var(--burgundy-warm);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 3rem;
+            position: relative;
+        }
+
+        .section {
+            position: relative;
+            margin: 4rem 0;
+            padding: 4rem;
+            background: rgba(232, 220, 196, 0.5);
+            border: 1px solid var(--sepia);
+            box-shadow: 0 10px 40px var(--shadow);
+        }
+
+        .section::before {
+            content: '';
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            right: 8px;
+            bottom: 8px;
+            border: 1px solid var(--gold-antique);
+            opacity: 0.3;
+            pointer-events: none;
+        }
+
+        .section-title {
+            font-family: 'Italiana', serif;
+            font-size: 2rem;
+            color: var(--burgundy-warm);
+            text-align: center;
+            margin-bottom: 3.5rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        .charter {
+            background: rgba(255, 255, 255, 0.4);
+            border: 2px solid var(--sepia);
+            padding: 3rem;
+            position: relative;
+        }
+
+        .charter::before {
+            content: '✦';
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--parchment);
+            padding: 0 1.5rem;
+            color: var(--burgundy-warm);
+            font-size: 1.5rem;
+        }
+
+        .rule-list {
+            list-style: none;
+        }
+
+        .rule-item {
+            margin-bottom: 2rem;
+            padding: 1.8rem;
+            padding-left: 5rem;
+            background: rgba(232, 220, 196, 0.6);
+            border: 1px solid var(--sepia);
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .rule-item:hover {
+            border-color: var(--burgundy-warm);
+            transform: translateX(8px);
+            box-shadow: 0 5px 20px var(--shadow);
+        }
+
+        .rule-number {
+            position: absolute;
+            left: 1.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 2.8rem;
+            height: 2.8rem;
+            background: var(--burgundy-warm);
+            color: var(--gold-antique);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Cinzel Decorative', serif;
+            font-weight: bold;
+            font-size: 1.1rem;
+            border: 2px solid var(--gold-antique);
+        }
+
+        .rule-item strong {
+            color: var(--burgundy-warm);
+            font-family: 'Cinzel Decorative', serif;
+            font-size: 0.95rem;
+            letter-spacing: 1px;
+            display: block;
+            margin-bottom: 0.6rem;
+            text-transform: uppercase;
+        }
+
+        .rule-item p {
+            color: var(--coffee);
+            font-size: 1.1rem;
+            line-height: 1.7;
+        }
+
+        .notice-box {
+            background: var(--burgundy-warm);
+            color: var(--parchment);
+            padding: 2.5rem;
+            margin-top: 3rem;
+            text-align: center;
+            position: relative;
+            border: 2px solid var(--gold-antique);
+        }
+
+        .notice-box::before {
+            content: '⚜';
+            position: absolute;
+            top: -18px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--parchment);
+            padding: 0 1.5rem;
+            color: var(--burgundy-warm);
+            font-size: 1.8rem;
+        }
+
+        .notice-box h4 {
+            font-family: 'Cinzel Decorative', serif;
+            margin-bottom: 1rem;
+            letter-spacing: 3px;
+            color: var(--gold-antique);
+        }
+
+        .notice-box p {
+            font-style: italic;
+            opacity: 0.95;
+        }
+
+        footer {
+            background: linear-gradient(180deg, var(--coffee) 0%, var(--ink) 100%);
+            border-top: 3px double var(--gold-antique);
+            padding: 5rem 2rem;
+            margin-top: 8rem;
+            text-align: center;
+        }
+
+        .footer-logo {
+            font-family: 'Italiana', serif;
+            font-size: 2rem;
+            color: var(--gold-antique);
+            margin-bottom: 1rem;
+            letter-spacing: 4px;
+        }
+
+        footer p {
+            color: var(--parchment-dark);
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .rule-item {
+                padding-left: 4rem;
+            }
+        }
+
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--parchment);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--sepia);
+            border: 2px solid var(--parchment);
+        }
+    </style>
+</head>
+<body>
+    <div class="parchment-bg"></div>
+    <div class="paper-texture"></div>
+
+    <nav>
+        <div class="nav-container">
+            <div class="logo">
+                <div class="logo-icon">📜</div>
+                <div>
+                    <h1>Gjimnazi i Qytetit</h1>
+                    <small style="color: var(--parchment-dark); font-size: 0.7rem; letter-spacing: 3px;">BIBLIOTECA ANTIQUA</small>
+                </div>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index2.html">Kryefaqja</a></li>
+                <li><a href="katalogu2.html">Katalogu</a></li>
+                <li><a href="huazo2.html">Huazo</a></li>
+                <li><a href="rregullat2.html" class="active">Rregullat</a></li>
+                <li><a href="oraret2.html">Oraret</a></li>
+                <li><a href="rreth-nesh2.html">Rreth Nesh</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <h2>✦ Statuti i Bibliotekës ✦</h2>
+    </div>
+
+    <div class="container">
+        <div class="section">
+            <h3 class="section-title">Kodi i Etikës së Lexuesit</h3>
+            
+            <div class="charter">
+                <ol class="rule-list">
+                    <li class="rule-item">
+                        <span class="rule-number">I</span>
+                        <strong>Identifikimi</strong>
+                        <p>Çdo lexues duhet të identifikohet me kartën e bibliotekës ose dokumentin e identitetit përpara se të marrë një vëllim në dorëzim.</p>
+                    </li>
+                    <li class="rule-item">
+                        <span class="rule-number">II</span>
+                        <strong>Koha e Huazimit</strong>
+                        <p>Vëllimet huazohen për një periudhë prej 14 ditësh kalendare. Rinovimi është i mundur për një periudhë të njëjtë, me kusht që vëllimi të mos jetë kërkuar nga lexues tjetër.</p>
+                    </li>
+                    <li class="rule-item">
+                        <span class="rule-number">III</span>
+                        <strong>Kufiri i Vëllimeve</strong>
+                        <p>Çdo lexues mund të ketë në dorëzim deri në 2 (dy) vëllime njëkohësisht. Për vëllime referencë, konsultimi bëhet vetëm në ambientet e bibliotekës.</p>
+                    </li>
+                    <li class="rule-item">
+                        <span class="rule-number">IV</span>
+                        <strong>Ruajtja e Vëllimeve</strong>
+                        <p>Lexuesi është përgjegjës për ruajtjen e integritetit fizik të vëllimit. Çdo dëmtim ose humbje dënohet me kompensimin e vlerës së vëllimit ose blerjen e një kopje të re.</p>
+                    </li>
+                    <li class="rule-item">
+                        <span class="rule-number">V</span>
+                        <strong>Qetësia</strong>
+                        <p>Në ambientet e bibliotekës ruhet heshtja absolute. Telefonat celularë duhet të jenë në modalitetin pa zë. Diskutimet lejohen vetëm në zonat e dedikuara.</p>
+                    </li>
+                    <li class="rule-item">
+                        <span class="rule-number">VI</span>
+                        <strong>Kthimi në Kohë</strong>
+                        <p>Vëllimet duhet të kthehen në ose para datës së caktuar. Çdo ditë vonesë dënohet me ndalim të huazimit për 3 ditë për çdo ditë vonesë.</p>
+                    </li>
+                    <li class="rule-item">
+                        <span class="rule-number">VII</span>
+                        <strong>Përdorimi i Resurseve Elektronike</strong>
+                        <p>Komputerët dhe bazat e të dhënave elektronike përdoren vetëm për qëllime kërkimore, studimore ose arsimore. Aksesi në internet monitorohet.</p>
+                    </li>
+                    <li class="rule-item">
+                        <span class="rule-number">VIII</span>
+                        <strong>Higjiena dhe Ushqimi</strong>
+                        <p>Nuk lejohet konsumimi i ushqimit, pijeve ose çamçakëzve në zonat e vëllimeve. Uji në shishe të mbyllura lejohet vetëm në zonën e leximit.</p>
+                    </li>
+                </ol>
+
+                <div class="notice-box">
+                    <h4>NJOFTIM</h4>
+                    <p>Shkelja e rregullave të mësipërme mund të rezultojë në pezullimin e privilegjeve të huazimit për një periudhë të përcaktuar nga administrata e bibliotekës. Për çdo paqartësi, ju lutemi drejtohuni bibliotekarit në detyrë.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">✦ Biblioteca Antiqua ✦</div>
+            <p>Gjimnazi i Qytetit — Qendër Kulturore dhe Edukative</p>
+        </div>
+    </footer>
+</body>
+</html>

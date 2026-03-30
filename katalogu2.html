@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Katalogu - Biblioteca Antiqua</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Cinzel+Decorative:wght@400;700&family=Italiana&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --parchment: #d4c5b0;
+            --parchment-dark: #b8a88a;
+            --sepia: #8b7355;
+            --coffee: #6b5344;
+            --burgundy-warm: #5d2e2e;
+            --gold-antique: #c9a961;
+            --gold-dark: #9a7b4f;
+            --ink: #3d2914;
+            --shadow: rgba(61, 41, 20, 0.4);
+        }
+
+        body {
+            font-family: 'Cormorant Garamond', serif;
+            background: var(--parchment);
+            color: var(--ink);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        .parchment-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(ellipse at 30% 20%, rgba(201, 169, 97, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 80%, rgba(93, 46, 46, 0.1) 0%, transparent 50%),
+                linear-gradient(180deg, #e8dcc4 0%, #d4c5b0 50%, #c9b896 100%);
+            z-index: -2;
+        }
+
+        .paper-texture {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.6' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.08'/%3E%3C/svg%3E");
+            opacity: 0.6;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        nav {
+            background: linear-gradient(180deg, rgba(139, 115, 85, 0.95) 0%, rgba(107, 83, 68, 0.98) 100%);
+            padding: 1.2rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 3px double var(--gold-antique);
+            box-shadow: 0 4px 20px var(--shadow);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-icon {
+            width: 55px;
+            height: 55px;
+            background: var(--parchment);
+            border: 3px solid var(--gold-antique);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            box-shadow: 0 0 0 2px var(--coffee), 0 4px 15px var(--shadow);
+        }
+
+        .logo h1 {
+            font-family: 'Cinzel Decorative', serif;
+            font-size: 1.4rem;
+            color: var(--parchment);
+            letter-spacing: 2px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 0.3rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--parchment-dark);
+            text-decoration: none;
+            font-family: 'Cinzel Decorative', serif;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+            padding: 0.6rem 1rem;
+            border: 1px solid transparent;
+            letter-spacing: 1px;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--gold-antique);
+            border: 1px solid var(--gold-antique);
+            background: rgba(201, 169, 97, 0.1);
+        }
+
+        .page-header {
+            background: linear-gradient(180deg, rgba(139, 115, 85, 0.3) 0%, transparent 100%);
+            padding: 5rem 2rem;
+            text-align: center;
+            border-bottom: 1px solid var(--sepia);
+        }
+
+        .page-header h2 {
+            font-family: 'Italiana', serif;
+            font-size: 3.2rem;
+            color: var(--burgundy-warm);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+        }
+
+        .page-header p {
+            color: var(--coffee);
+            font-size: 1.3rem;
+            margin-top: 1rem;
+            font-style: italic;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 3rem;
+            position: relative;
+        }
+
+        .section {
+            position: relative;
+            margin: 4rem 0;
+            padding: 3rem;
+            background: rgba(232, 220, 196, 0.5);
+            border: 1px solid var(--sepia);
+            box-shadow: 0 10px 40px var(--shadow);
+        }
+
+        .section::before {
+            content: '';
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            right: 8px;
+            bottom: 8px;
+            border: 1px solid var(--gold-antique);
+            opacity: 0.3;
+            pointer-events: none;
+        }
+
+        /* Filter tabs */
+        .filter-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: rgba(184, 168, 138, 0.3);
+            border: 1px solid var(--sepia);
+        }
+
+        .filter-btn {
+            font-family: 'Cinzel Decorative', serif;
+            background: transparent;
+            border: 1px solid var(--sepia);
+            color: var(--coffee);
+            padding: 0.9rem 1.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 1px;
+            font-size: 0.85rem;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            border-color: var(--burgundy-warm);
+            color: var(--burgundy-warm);
+            background: rgba(93, 46, 46, 0.1);
+        }
+
+        /* Books grid */
+        .books-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2.5rem;
+        }
+
+        .book-card {
+            background: linear-gradient(135deg, rgba(232, 220, 196, 0.9) 0%, rgba(212, 197, 176, 0.9) 100%);
+            border: 2px solid var(--sepia);
+            position: relative;
+            transition: all 0.4s ease;
+            overflow: hidden;
+        }
+
+        .book-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, var(--burgundy-warm), transparent);
+        }
+
+        .book-card:hover {
+            transform: translateY(-12px);
+            border-color: var(--burgundy-warm);
+            box-shadow: 0 25px 50px var(--shadow);
+        }
+
+        .book-cover {
+            height: 240px;
+            background: 
+                linear-gradient(135deg, rgba(139, 115, 85, 0.6) 0%, rgba(107, 83, 68, 0.7) 100%),
+                url("data:image/svg+xml,%3Csvg width='30' height='30' viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5,5 Q15,0 25,5 M5,25 Q15,30 25,25' fill='none' stroke='%233d2914' stroke-opacity='0.1'/%3E%3C/svg%3E");
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            border-bottom: 2px solid var(--sepia);
+        }
+
+        .book-tome {
+            width: 70px;
+            height: 190px;
+            background: linear-gradient(90deg, 
+                var(--ink) 0%, 
+                var(--coffee) 15%, 
+                var(--sepia) 40%, 
+                var(--gold-dark) 50%, 
+                var(--sepia) 60%, 
+                var(--coffee) 85%, 
+                var(--ink) 100%);
+            border-radius: 3px;
+            box-shadow: 
+                0 0 30px rgba(0,0,0,0.4),
+                inset 0 0 20px rgba(0,0,0,0.3);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .book-tome::before {
+            content: '✦';
+            color: rgba(201, 169, 97, 0.6);
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .book-tome::after {
+            content: '';
+            position: absolute;
+            top: 30%;
+            left: 15%;
+            right: 15%;
+            height: 2px;
+            background: rgba(61, 41, 20, 0.3);
+            box-shadow: 
+                0 40px 0 rgba(61, 41, 20, 0.3),
+                0 80px 0 rgba(61, 41, 20, 0.3);
+        }
+
+        .book-info {
+            padding: 1.8rem;
+        }
+
+        .book-title {
+            font-family: 'Italiana', serif;
+            font-size: 1.4rem;
+            color: var(--burgundy-warm);
+            margin-bottom: 0.6rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            line-height: 1.3;
+        }
+
+        .book-author {
+            color: var(--coffee);
+            font-size: 1.05rem;
+            margin-bottom: 0.8rem;
+            font-style: italic;
+        }
+
+        .book-category {
+            display: inline-block;
+            font-family: 'Cinzel Decorative', serif;
+            font-size: 0.7rem;
+            color: var(--gold-dark);
+            padding: 0.3rem 0.9rem;
+            border: 1px solid var(--gold-dark);
+            margin-bottom: 1rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .book-desc {
+            font-size: 1rem;
+            color: var(--coffee);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .book-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1.2rem;
+            border-top: 1px solid var(--sepia);
+        }
+
+        .availability {
+            font-family: 'Cinzel Decorative', serif;
+            font-size: 0.75rem;
+            padding: 0.4rem 1rem;
+            letter-spacing: 1px;
+            border: 1px solid;
+        }
+
+        .available {
+            color: #4a7c59;
+            border-color: #4a7c59;
+            background: rgba(74, 124, 89, 0.1);
+        }
+
+        .unavailable {
+            color: #8b4557;
+            border-color: #8b4557;
+            background: rgba(139, 69, 87, 0.1);
+        }
+
+        .favorite-btn {
+            background: none;
+            border: none;
+            font-size: 1.4rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--sepia);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .favorite-btn:hover,
+        .favorite-btn.liked {
+            color: var(--burgundy-warm);
+            transform: scale(1.1);
+        }
+
+        footer {
+            background: linear-gradient(180deg, var(--coffee) 0%, var(--ink) 100%);
+            border-top: 3px double var(--gold-antique);
+            padding: 5rem 2rem;
+            margin-top: 8rem;
+            text-align: center;
+        }
+
+        .footer-logo {
+            font-family: 'Italiana', serif;
+            font-size: 2rem;
+            color: var(--gold-antique);
+            margin-bottom: 1rem;
+            letter-spacing: 4px;
+        }
+
+        footer p {
+            color: var(--parchment-dark);
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .page-header h2 {
+                font-size: 2rem;
+            }
+        }
+
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--parchment);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--sepia);
+            border: 2px solid var(--parchment);
+        }
+    </style>
+</head>
+<body>
+    <div class="parchment-bg"></div>
+    <div class="paper-texture"></div>
+
+    <nav>
+        <div class="nav-container">
+            <div class="logo">
+                <div class="logo-icon">📜</div>
+                <div>
+                    <h1>Gjimnazi i Qytetit</h1>
+                    <small style="color: var(--parchment-dark); font-size: 0.7rem; letter-spacing: 3px;">BIBLIOTECA ANTIQUA</small>
+                </div>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index2.html">Kryefaqja</a></li>
+                <li><a href="katalogu2.html" class="active">Katalogu</a></li>
+                <li><a href="huazo2.html">Huazo</a></li>
+                <li><a href="rregullat2.html">Rregullat</a></li>
+                <li><a href="oraret2.html">Oraret</a></li>
+                <li><a href="rreth-nesh2.html">Rreth Nesh</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <h2>✦ Katalogu i Vëllimeve ✦</h2>
+        <p>"Një libër është një ëndërr që keni në duar"</p>
+    </div>
+
+    <div class="container">
+        <div class="section">
+            <div class="filter-tabs">
+                <button class="filter-btn active" data-filter="all">Të Gjitha</button>
+                <button class="filter-btn" data-filter="classic">Klasikë Botërorë</button>
+                <button class="filter-btn" data-filter="albanian">Letërsi Shqiptare</button>
+                <button class="filter-btn" data-filter="philosophy">Filozofi</button>
+                <button class="filter-btn" data-filter="poetry">Poezi</button>
+                <button class="filter-btn" data-filter="drama">Dramë</button>
+                <button class="filter-btn" data-filter="novel">Roman</button>
+            </div>
+
+            <div class="books-grid" id="booksGrid"></div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">✦ Biblioteca Antiqua ✦</div>
+            <p>Gjimnazi i Qytetit — Qendër Kulturore dhe Edukative</p>
+        </div>
+    </footer>
+
+    <script>
+        const books = [
+            { id: 1, title: "Krim dhe Ndëshkim", author: "Fjodor Dostojevski", category: "classic", categoryName: "Klasik Botëror", desc: "Roman psikologjik i madh që heton natyrën e së keqes dhe ndëshkimit moral në Shën Petersburg të shekullit XIX.", available: true, likes: 38 },
+            { id: 2, title: "Pride and Prejudice", author: "Jane Austen", category: "classic", categoryName: "Klasik Botëror", desc: "Roman i dashurisë dhe marrëzive shoqërore në Anglinë e shekullit XIX, me Elizabeth Bennet dhe Mr. Darcy.", available: true, likes: 45 },
+            { id: 3, title: "Iliada", author: "Homer", category: "classic", categoryName: "Klasik Antik", desc: "Epopeja epike greke që tregon historinë e Akilit dhe Luftës së Trojës, një themel i letërsisë perëndimore.", available: false, likes: 52 },
+            { id: 4, title: "Odisea", author: "Homer", category: "classic", categoryName: "Klasik Antik", desc: "Udhëtimi i Odiseut për të kthyer në Itaka pas Luftës së Trojës, përballë mostrave dhe perëndive.", available: true, likes: 48 },
+            { id: 5, title: "Prometheu i Vënë në Zinxhirë", author: "Eshil", category: "drama", categoryName: "Dramë Antike", desc: "Tragjedia greke ku Prometheu dënohet nga Zeusi për t'i dhënë zjarrin njerëzimit.", available: true, likes: 29 },
+            { id: 6, title: "Medea", author: "Euripid", category: "drama", categoryName: "Dramë Antike", desc: "Tragjedia e gruas që hakmerret ndaj burrit të saj duke vrarë fëmijët e saj.", available: true, likes: 33 },
+            { id: 7, title: "Dekameron", author: "Giovanni Boccaccio", category: "classic", categoryName: "Klasik Rilindje", desc: "Koleksion 100 tregimesh të treguara nga 10 të rinj që shmangin murtajën në Firence.", available: true, likes: 27 },
+            { id: 8, title: "Divina Commedia", author: "Dante Alighieri", category: "poetry", categoryName: "Poezi Epike", desc: "Udhëtimi i Dantes nëpër Ferr, Purgator dhe Parajsë, kryevepra e letërsisë italiane.", available: false, likes: 56 },
+            { id: 9, title: "Don Kishoti", author: "Miguel de Cervantes", category: "classic", categoryName: "Klasik Spanjoll", desc: "Aventurat e kaloritit të çmendur që lufton kundër mullinjve të erës, themeli i romanit modern.", available: true, likes: 41 },
+            { id: 10, title: "Hamleti", author: "William Shakespeare", category: "drama", categoryName: "Dramë Elizabetiane", desc: "Princi i Danimarkës kërkon hakmarrje për vrasjen e të atit, një nga tragjeditë më të mëdha.", available: true, likes: 49 },
+            { id: 11, title: "Makbethi", author: "William Shakespeare", category: "drama", categoryName: "Dramë Elizabetiane", desc: "Ambicia e çon një gjeneral skocez drejt vrasjes dhe çmendurisë.", available: true, likes: 44 },
+            { id: 12, title: "Romeo dhe Zhulieta", author: "William Shakespeare", category: "drama", categoryName: "Dramë Elizabetiane", desc: "Historia e dashurisë së ndaluar mes dy të rinjve nga familje armiqësore në Verona.", available: true, likes: 51 },
+            { id: 13, title: "Zadig", author: "Voltaire", category: "philosophy", categoryName: "Filozofi", desc: "Roman filozofik që trajton temat e fatit, zgjuarsisë dhe lumturisë përmes aventurave të Zadigut.", available: true, likes: 22 },
+            { id: 14, title: "Kandidi", author: "Voltaire", desc: "Roman satirik që kritikon optimizmin e Leibnizit përmes aventurave të Kandidit.", category: "philosophy", categoryName: "Filozofi", available: true, likes: 35 },
+            { id: 15, title: "Katedralja e Parisit", author: "Victor Hugo", category: "novel", categoryName: "Romantizëm Francez", desc: "Dashuria e Quasimodos për Esmeraldën nën hijen e Notre-Dame në Parisin mesjetar.", available: true, likes: 39 },
+            { id: 16, title: "Të Mjerët", author: "Victor Hugo", category: "novel", categoryName: "Romantizëm Francez", desc: "Saga epike e Jean Valjean-it dhe Francës së shekullit XIX, një himn për njerëzimin.", available: false, likes: 47 },
+            { id: 17, title: "Robinson Kruzo", author: "Daniel Defoe", category: "novel", categoryName: "Aventurë", desc: "Historiia e mbijetesës së Robinsonit në një ishull të shkretë për 28 vjet.", available: true, likes: 36 },
+            { id: 18, title: "Gulliveri", author: "Jonathan Swift", category: "novel", categoryName: "Satirë", desc: "Aventurat e Gulliverit në vendet e Liliputit dhe Brobdingnagut, satirë e shoqërisë.", available: true, likes: 31 },
+            { id: 19, title: "De Rerum Natura", author: "Titus Lucretius Carus", category: "philosophy", categoryName: "Filozofi Antike", desc: "Poemë filozofike latine që shpjegon botën sipas atomizmit të Epikurit.", available: true, likes: 19 },
+            { id: 20, title: "Eneida", author: "Virgili", category: "classic", categoryName: "Klasik Romak", desc: "Epopeja latine që tregon udhëtimin e Eneasit nga Troja në Itali për të themeluar Romën.", available: true, likes: 42 },
+            { id: 21, title: "Metamorfozat", author: "Ovidi", category: "classic", categoryName: "Klasik Romak", desc: "Koleksion mitesh greke dhe romake të transformimit, nga krijimi i botës deri te Julia Cezari.", available: true, likes: 28 },
+            { id: 22, title: "Fedon", author: "Platon", category: "philosophy", categoryName: "Filozofi Antike", desc: "Dialog filozofik që trajton vdekjen dhe pavdekësinë e shpirtit në ditët e fundit të Sokratit.", available: true, likes: 34 },
+            { id: 23, title: "Sofokles - Edipi Mbret", author: "Sofokles", category: "drama", categoryName: "Dramë Antike", desc: "Tragjedia ku Edipi zbulon se ai vetë është vrasësi i të atit dhe burri i nënës.", available: false, likes: 40 },
+            { id: 24, title: "Antigona", author: "Sofokles", category: "drama", categoryName: "Dramë Antike", desc: "Vajza e Edipit sfidon ligjin e mbretit për të varrosur vëllain e saj.", available: true, likes: 37 },
+            { id: 25, title: "Mbi Qiellin dhe Ferrin", author: "Dante Alighieri", category: "poetry", categoryName: "Poezi Epike", desc: "Vazhdimi i Divina Commedia, por kjo është një vepër tjetër e rëndësishme.", available: true, likes: 25 }
+        ];
+
+        let likedBooks = new Set();
+
+        document.addEventListener('DOMContentLoaded', function() {
+            renderBooks('all');
+        });
+
+        function renderBooks(filter) {
+            const grid = document.getElementById('booksGrid');
+            grid.innerHTML = '';
+            
+            const filteredBooks = filter === 'all' ? books : books.filter(b => b.category === filter);
+            
+            filteredBooks.forEach((book, index) => {
+                const card = createBookCard(book, index);
+                grid.appendChild(card);
+            });
+        }
+
+        function createBookCard(book, index) {
+            const card = document.createElement('div');
+            card.className = 'book-card';
+            card.style.animationDelay = `${index * 0.08}s`;
+            
+            const isLiked = likedBooks.has(book.id);
+            const availClass = book.available ? 'available' : 'unavailable';
+            const availText = book.available ? 'Në Dispozicion' : 'I Rezervuar';
+            
+            card.innerHTML = `
+                <div class="book-cover">
+                    <div class="book-tome"></div>
+                </div>
+                <div class="book-info">
+                    <div class="book-title">${book.title}</div>
+                    <div class="book-author">— ${book.author} —</div>
+                    <span class="book-category">${book.categoryName}</span>
+                    <div class="book-desc">${book.desc}</div>
+                    <div class="book-footer">
+                        <span class="availability ${availClass}">${availText}</span>
+                        <button class="favorite-btn ${isLiked ? 'liked' : ''}" onclick="toggleLike(${book.id})">
+                            ${isLiked ? '◆' : '◇'} ${book.likes + (isLiked ? 1 : 0)}
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            return card;
+        }
+
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                renderBooks(this.dataset.filter);
+            });
+        });
+
+        function toggleLike(bookId) {
+            if (likedBooks.has(bookId)) {
+                likedBooks.delete(bookId);
+            } else {
+                likedBooks.add(bookId);
+            }
+            renderBooks(document.querySelector('.filter-btn.active').dataset.filter);
+        }
+    </script>
+</body>
+</html>
