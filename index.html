@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biblioteka e Qytetit - Gjimnazi i Qytetit</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Cinzel+Decorative:wght@400;700&family=Italiana&display=swap">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --parchment: #d4c5b0;
+            --parchment-dark: #b8a88a;
+            --sepia: #8b7355;
+            --coffee: #6b5344;
+            --burgundy-warm: #5d2e2e;
+            --gold-antique: #c9a961;
+            --gold-dark: #9a7b4f;
+            --ink: #3d2914;
+            --shadow: rgba(61, 41, 20, 0.4);
+        }
+
+        body {
+            font-family: 'Cormorant Garamond', serif;
+            background: var(--parchment);
+            color: var(--ink);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        /* Parchment texture background */
+        .parchment-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(ellipse at 30% 20%, rgba(201, 169, 97, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 80%, rgba(93, 46, 46, 0.1) 0%, transparent 50%),
+                linear-gradient(180deg, #e8dcc4 0%, #d4c5b0 50%, #c9b896 100%);
+            z-index: -2;
+        }
+
+        .paper-texture {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.6' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.08'/%3E%3C/svg%3E");
+            opacity: 0.6;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Vintage corner ornaments */
+        .corner-ornament {
+            position: fixed;
+            width: 150px;
+            height: 150px;
+            opacity: 0.3;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .corner-tl { top: 20px; left: 20px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M0,0 L40,0 Q20,20 0,40 Z' fill='none' stroke='%233d2914' stroke-width='2'/%3E%3Cpath d='M0,0 Q30,10 50,0 M0,0 Q10,30 0,50' fill='none' stroke='%233d2914' stroke-width='1'/%3E%3Ccircle cx='20' cy='20' r='3' fill='%233d2914'/%3E%3C/svg%3E") no-repeat; }
+        .corner-tr { top: 20px; right: 20px; transform: scaleX(-1); background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M0,0 L40,0 Q20,20 0,40 Z' fill='none' stroke='%233d2914' stroke-width='2'/%3E%3Cpath d='M0,0 Q30,10 50,0 M0,0 Q10,30 0,50' fill='none' stroke='%233d2914' stroke-width='1'/%3E%3Ccircle cx='20' cy='20' r='3' fill='%233d2914'/%3E%3C/svg%3E") no-repeat; }
+        .corner-bl { bottom: 20px; left: 20px; transform: scaleY(-1); background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M0,0 L40,0 Q20,20 0,40 Z' fill='none' stroke='%233d2914' stroke-width='2'/%3E%3Cpath d='M0,0 Q30,10 50,0 M0,0 Q10,30 0,50' fill='none' stroke='%233d2914' stroke-width='1'/%3E%3Ccircle cx='20' cy='20' r='3' fill='%233d2914'/%3E%3C/svg%3E") no-repeat; }
+        .corner-br { bottom: 20px; right: 20px; transform: scale(-1); background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M0,0 L40,0 Q20,20 0,40 Z' fill='none' stroke='%233d2914' stroke-width='2'/%3E%3Cpath d='M0,0 Q30,10 50,0 M0,0 Q10,30 0,50' fill='none' stroke='%233d2914' stroke-width='1'/%3E%3Ccircle cx='20' cy='20' r='3' fill='%233d2914'/%3E%3C/svg%3E") no-repeat; }
+
+        /* Navigation */
+        nav {
+            background: linear-gradient(180deg, rgba(139, 115, 85, 0.95) 0%, rgba(107, 83, 68, 0.98) 100%);
+            padding: 1.2rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 3px double var(--gold-antique);
+            box-shadow: 0 4px 20px var(--shadow);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-icon {
+            width: 55px;
+            height: 55px;
+            background: var(--parchment);
+            border: 3px solid var(--gold-antique);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            box-shadow: 
+                0 0 0 2px var(--coffee),
+                0 4px 15px var(--shadow);
+            position: relative;
+        }
+
+        .logo-icon::after {
+            content: '';
+            position: absolute;
+            inset: -6px;
+            border: 1px solid var(--gold-antique);
+            border-radius: 50%;
+            opacity: 0.5;
+        }
+
+        .logo h1 {
+            font-family: 'Cinzel Decorative', serif;
+            font-size: 1.4rem;
+            color: var(--parchment);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            letter-spacing: 2px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 0.3rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--parchment-dark);
+            text-decoration: none;
+            font-family: 'Cinzel Decorative', serif;
+            font-size: 0.8rem;
+            font-weight: 400;
+            transition: all 0.3s ease;
+            position: relative;
+            padding: 0.6rem 1rem;
+            border: 1px solid transparent;
+            letter-spacing: 1px;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--gold-antique);
+            border: 1px solid var(--gold-antique);
+            background: rgba(201, 169, 97, 0.1);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 85vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 4rem 2rem;
+            background: 
+                linear-gradient(180deg, transparent 0%, rgba(212, 197, 176, 0.3) 100%);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            max-width: 850px;
+            padding: 4rem;
+            background: rgba(232, 220, 196, 0.7);
+            border: 2px solid var(--sepia);
+            box-shadow: 
+                0 0 0 1px var(--gold-antique),
+                0 0 0 8px rgba(201, 169, 97, 0.1),
+                0 20px 60px var(--shadow);
+        }
+
+        .hero-content::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            right: 15px;
+            bottom: 15px;
+            border: 1px solid var(--gold-antique);
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        .vintage-divider {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .vintage-divider::before,
+        .vintage-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--sepia), transparent);
+        }
+
+        .vintage-divider span {
+            color: var(--burgundy-warm);
+            font-size: 1.8rem;
+            font-family: 'Cinzel Decorative', serif;
+        }
+
+        .hero h2 {
+            font-family: 'Italiana', serif;
+            font-size: 3.8rem;
+            font-weight: 400;
+            color: var(--burgundy-warm);
+            margin-bottom: 0.5rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+        }
+
+        .hero-subtitle {
+            font-family: 'Cinzel Decorative', serif;
+            font-size: 1.1rem;
+            color: var(--coffee);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 2rem;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--ink);
+            margin-bottom: 3rem;
+            font-style: italic;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+        }
+
+        .btn {
+            font-family: 'Cinzel Decorative', serif;
+            padding: 1rem 2.5rem;
+            border: 2px solid var(--burgundy-warm);
+            background: transparent;
+            color: var(--burgundy-warm);
+            cursor: pointer;
+            transition: all 0.4s ease;
+            text-decoration: none;
+            display: inline-block;
+            letter-spacing: 2px;
+            font-size: 0.85rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '✦';
+            position: absolute;
+            left: 10px;
+            opacity: 0;
+            transition: all 0.3s;
+        }
+
+        .btn::after {
+            content: '✦';
+            position: absolute;
+            right: 10px;
+            opacity: 0;
+            transition: all 0.3s;
+        }
+
+        .btn:hover::before, .btn:hover::after {
+            opacity: 1;
+        }
+
+        .btn:hover {
+            background: var(--burgundy-warm);
+            color: var(--parchment);
+            padding-left: 3rem;
+            padding-right: 3rem;
+        }
+
+        .btn-primary {
+            background: var(--burgundy-warm);
+            color: var(--parchment);
+        }
+
+        .btn-primary:hover {
+            background: transparent;
+            color: var(--burgundy-warm);
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 3rem;
+            position: relative;
+        }
+
+        /* Section styling */
+        .section {
+            position: relative;
+            margin: 5rem 0;
+            padding: 4rem;
+            background: rgba(232, 220, 196, 0.5);
+            border: 1px solid var(--sepia);
+            box-shadow: 0 10px 40px var(--shadow);
+        }
+
+        .section::before {
+            content: '';
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            right: 8px;
+            bottom: 8px;
+            border: 1px solid var(--gold-antique);
+            opacity: 0.3;
+            pointer-events: none;
+        }
+
+        .section-title {
+            font-family: 'Italiana', serif;
+            font-size: 2.8rem;
+            color: var(--burgundy-warm);
+            text-align: center;
+            margin-bottom: 3rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        .ornate-line {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 3rem;
+        }
+
+        .ornate-line::before,
+        .ornate-line::after {
+            content: '';
+            width: 80px;
+            height: 1px;
+            background: var(--sepia);
+        }
+
+        .ornate-line span {
+            color: var(--gold-antique);
+            font-size: 1.5rem;
+        }
+
+        /* Stats */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 2.5rem;
+            margin: 4rem 0;
+        }
+
+        .stat-card {
+            background: var(--parchment-dark);
+            border: 2px solid var(--sepia);
+            padding: 2.5rem 1.5rem;
+            text-align: center;
+            position: relative;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px var(--shadow);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            right: 5px;
+            bottom: 5px;
+            border: 1px solid var(--gold-antique);
+            opacity: 0.4;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--gold-antique);
+        }
+
+        .stat-number {
+            font-family: 'Italiana', serif;
+            font-size: 3.5rem;
+            color: var(--burgundy-warm);
+            margin-bottom: 0.5rem;
+            letter-spacing: 2px;
+        }
+
+        .stat-label {
+            font-family: 'Cinzel Decorative', serif;
+            font-size: 0.8rem;
+            color: var(--coffee);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        /* Features */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2.5rem;
+        }
+
+        .feature-card {
+            background: rgba(232, 220, 196, 0.8);
+            border: 1px solid var(--sepia);
+            padding: 3rem 2rem;
+            text-align: center;
+            transition: all 0.4s ease;
+            position: relative;
+        }
+
+        .feature-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 3px;
+            background: var(--burgundy-warm);
+            transition: width 0.4s ease;
+        }
+
+        .feature-card:hover::after {
+            width: 60%;
+        }
+
+        .feature-card:hover {
+            border-color: var(--burgundy-warm);
+            background: var(--parchment);
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--burgundy-warm);
+            opacity: 0.8;
+        }
+
+        .feature-card h3 {
+            font-family: 'Cinzel Decorative', serif;
+            color: var(--burgundy-warm);
+            margin-bottom: 1rem;
+            letter-spacing: 2px;
+            font-size: 1.1rem;
+        }
+
+        .feature-card p {
+            color: var(--coffee);
+            font-size: 1.15rem;
+            line-height: 1.7;
+        }
+
+        /* Footer */
+        footer {
+            background: linear-gradient(180deg, var(--coffee) 0%, var(--ink) 100%);
+            border-top: 3px double var(--gold-antique);
+            padding: 5rem 2rem;
+            margin-top: 8rem;
+            text-align: center;
+            position: relative;
+        }
+
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--gold-antique), transparent);
+        }
+
+        .footer-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .footer-logo {
+            font-family: 'Italiana', serif;
+            font-size: 2rem;
+            color: var(--gold-antique);
+            margin-bottom: 1rem;
+            letter-spacing: 4px;
+        }
+
+        footer p {
+            color: var(--parchment-dark);
+            font-size: 1.05rem;
+            letter-spacing: 1px;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--parchment);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--sepia);
+            border: 2px solid var(--parchment);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .hero h2 {
+                font-size: 2.2rem;
+            }
+            
+            .hero-content {
+                padding: 2rem;
+            }
+            
+            .section {
+                padding: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="parchment-bg"></div>
+    <div class="paper-texture"></div>
+    <div class="corner-ornament corner-tl"></div>
+    <div class="corner-ornament corner-tr"></div>
+    <div class="corner-ornament corner-bl"></div>
+    <div class="corner-ornament corner-br"></div>
+
+    <nav>
+        <div class="nav-container">
+            <div class="logo">
+                <div class="logo-icon">📜</div>
+                <div>
+                    <h1>Gjimnazi i Qytetit</h1>
+                    <small style="color: var(--parchment-dark); font-size: 0.7rem; letter-spacing: 3px;">BIBLIOTECA ANTIQUA</small>
+                </div>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index2.html" class="active">Kryefaqja</a></li>
+                <li><a href="katalogu2.html">Katalogu</a></li>
+                <li><a href="huazo2.html">Huazo</a></li>
+                <li><a href="rregullat2.html">Rregullat</a></li>
+                <li><a href="oraret2.html">Oraret</a></li>
+                <li><a href="rreth-nesh2.html">Rreth Nesh</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-content">
+            <div class="vintage-divider"><span>✦</span></div>
+            <h2>Biblioteca Antiqua</h2>
+            <div class="hero-subtitle">Gjimnazi i Qytetit</div>
+            <div class="vintage-divider"><span>✦</span></div>
+            <p>"Libri është dritë në shtëpinë e shpirtit" — Udhëtimi juaj drejt dijes fillon këtu. Zbuloni koleksionin tonë të pasur të letërsisë klasike dhe bashkëkohore.</p>
+            <div class="hero-buttons">
+                <a href="katalogu2.html" class="btn btn-primary">Eksploro Katalogun</a>
+                <a href="huazo2.html" class="btn">Rezervo Tani</a>
+            </div>
+        </div>
+    </section>
+
+    <div class="container">
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-number">25</div>
+                <div class="stat-label">Vëllime në Katalog</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">22</div>
+                <div class="stat-label">Të Disponueshëm</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">200+</div>
+                <div class="stat-label">Lexues Regjistruar</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">6</div>
+                <div class="stat-label">Kategori Kryesore</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="ornate-line"><span>❧</span></div>
+            <h2 class="section-title">Shërbimet Tona</h2>
+            <div class="features">
+                <div class="feature-card">
+                    <div class="feature-icon">📚</div>
+                    <h3>Koleksion i Kuruar</h3>
+                    <p>25 vëllime të zgjedhura me kujdes nga letërsia botërore dhe shqiptare, nga antikiteti në ditët tona.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚜</div>
+                    <h3>Rezervim Online</h3>
+                    <p>Rezervoni librin tuaj të preferuar në çdo kohë. Sistemi ynë digjital është i disponueshme 24/7.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">✒</div>
+                    <h3>Ambient Studimi</h3>
+                    <p>Hapësira e dedikuar për lexim dhe studim me atmosferë të qetë dhe inspiruese.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">✦ Biblioteca Antiqua ✦</div>
+            <p>Gjimnazi i Qytetit — Qendër Kulturore dhe Edukative</p>
+            <p style="margin-top: 1rem; color: var(--sepia); font-size: 0.95rem;">
+                Rruga e Dritës, Nr. 15 | Tel: 042 123 456 | biblioteka@gjimnazi.edu.al
+            </p>
+        </div>
+    </footer>
+</body>
+</html>
